@@ -4,6 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+// use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Validator;
+
 
 class ProductController extends Controller
 {
@@ -123,4 +134,59 @@ class ProductController extends Controller
 
         return response()->json($produits);
     }
+
+    /**
+     * Exporter la liste des produits au format PDF.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function exportPDF()
+{
+    $products = Product::all();
+
+    $pdf = Pdf::loadView('products.pdf', compact('products'));
+    return $pdf->download('liste_produits.pdf');
+}
+
+public function show($id)
+{
+    $product = Product::findOrFail($id);
+    return view('products.show', compact('product'));
+}
+
+// fonction pour exporter les produits au format Excel
+
+
+public function exportExcel()
+{
+    return Excel::download(new ProductsExport, 'produits.xlsx');
+}
+
+  // fonction pour importer les produits depuis un fichier Excel
+
+  public function importExcel(Request $request)
+{
+    $request->validate([
+        'excel_file' => 'required|file|mimes:xlsx,xls'
+    ]);
+
+    $file = $request->file('excel_file');
+    $data = IOFactory::load($file->getPathname())
+        ->getActiveSheet()
+        ->toArray(null, true, true, true);
+
+    foreach (array_slice($data, 1) as $row) {
+        Product::create([
+            'name' => $row['A'] ?? '',
+            'description' => $row['B'] ?? '',
+            'price' => $row['C'] ?? 0,
+            'quantite' => $row['D'] ?? 0,
+        ]);
+    }
+
+    return redirect()->route('dashboard')->with('success', 'Produits importés avec succès.');
+}
+
+
 }

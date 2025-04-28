@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Exports\ProductsExport;
+use App\Imports\ProductsImport;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     // Gestion des produits (CRUD complet)
     //Route::resource('products', ProductController::class);
     Route::resource('products', ProductController::class)->except(['create']);
+    
     Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
     //
     // Route pour afficher les produits rechercher
@@ -46,7 +51,19 @@ Route::middleware(['auth'])->group(function () {
     
         return response()->json($products);
     });
+
+    Route::get('/products/export/pdf', [ProductController::class, 'exportPDF'])->name('products.exportPDF');
+
+    // Route::get('/products/export-excel', function () {
+    //     return Excel::download(new ProductsExport, 'produits.xlsx');
+    // })->name('products.exportExcel');
+
+    Route::get('/products/export-excel', [ProductController::class, 'exportExcel'])->name('products.exportExcel');
+    //Route::post('/products/import-excel', [ProductController::class, 'importExcel'])->name('products.importExcel');
+
+    Route::post('/products/import-excel', [ProductController::class, 'importExcel'])->name('products.importExcel');
     
+    //Route::get('/products/import-excel', [ProductController::class, 'importExcel'])->name('products.importExcel');
 });
 
 require __DIR__.'/auth.php';

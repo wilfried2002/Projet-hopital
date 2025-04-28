@@ -13,6 +13,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                 <!-- Notification de succès -->
+                 
                 @if(session('success'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 2000)" 
                              class="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-lg shadow-lg mb-4 z-50 transition-all">
@@ -57,20 +58,47 @@
             <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
                 <!-- Export PDF -->
                 <li>
-                    <button wire:click="exportPDF"
-                        class="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-gray-600 transition">
+                <a href="{{ route('products.exportPDF') }}"
+                        class="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-gray-600 transition block">
                         📄 Exporter PDF
-                    </button>
-                </li>
+                </a>
 
-                <!-- Import Excel -->
-                <li>
-                    <label class="w-full block px-4 py-2 cursor-pointer hover:bg-yellow-100 dark:hover:bg-gray-600 transition">
-                        📥 Importer Excel
-                        <input type="file" wire:model="importFile" wire:change="importExcel"
-                               class="hidden" accept=".xlsx, .xls">
-                    </label>
                 </li>
+                <!-- Export Excel -->
+
+                <!-- <li>
+                    <a href="{{ route('products.exportExcel') }}"
+                        class="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-gray-600 transition block">
+                        📊 Exporter Excel
+                    </a>
+                </li> -->
+                
+
+
+                <!-- Importer Excel -->
+                <!-- 1. Bouton dans le menu -->
+                <li>
+    <form action="{{ route('products.importExcel') }}" method="POST" enctype="multipart/form-data" class="px-4 py-2">
+        @csrf
+        <label for="excelFile" class="cursor-pointer block hover:bg-yellow-100 dark:hover:bg-gray-600 px-2 py-1 rounded transition">
+            📊 Importer Excel
+            <input type="file" name="excel_file" id="excelFile" class="hidden" onchange="this.form.submit()">
+        </label>
+    </form>
+</li>
+
+
+
+
+                </li>
+                <!-- Importer PDF -->
+                <!-- <li>
+                <a href="#"
+                        class="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-gray-600 transition block">
+                        📄 Importer PDF
+                </a>
+
+                </li> -->
             </ul>
         </div>
     </div>
