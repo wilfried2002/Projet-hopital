@@ -9,6 +9,8 @@ use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+
 
 // use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\Storage;
@@ -168,25 +170,52 @@ public function exportExcel()
   public function importExcel(Request $request)
 {
     $request->validate([
-        'excel_file' => 'required|file|mimes:xlsx,xls'
+        'excel_file' => 'required|file|mimes:xlsx,xls,csv'
     ]);
 
     $file = $request->file('excel_file');
-    $data = IOFactory::load($file->getPathname())
-        ->getActiveSheet()
-        ->toArray(null, true, true, true);
 
-    foreach (array_slice($data, 1) as $row) {
-        Product::create([
-            'name' => $row['A'] ?? '',
-            'description' => $row['B'] ?? '',
-            'price' => $row['C'] ?? 0,
-            'quantite' => $row['D'] ?? 0,
-        ]);
+    // On récupère l'extension réelle
+    $extension = $file->getClientOriginalExtension();
+
+    // Choisir le bon reader selon le type de fichier
+    if (in_array($extension, ['xlsx', 'xls'])) {
+        $reader = ReaderEntityFactory::createXLSXReader();
+    } elseif ($extension === 'csv') {
+        $reader = ReaderEntityFactory::createCSVReader();
+    } else {
+        return back()->with('error', 'Type de fichier non supporté.');
     }
+
+    $reader->open($file->getPathname());
+
+    foreach ($reader->getSheetIterator() as $sheet) {
+        foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+            if ($rowIndex === 1) {
+                continue;
+            }
+
+            $cells = $row->toArray();
+
+            if (empty(array_filter($cells))) {
+                continue;
+            }
+
+            Product::create([
+                'name' => $cells[0] ?? '',
+                'description' => $cells[1] ?? '',
+                'price' => is_numeric($cells[2]) ? $cells[2] : 0,
+                'quantite' => is_numeric($cells[3]) ? (int)$cells[3] : 0,
+            ]);
+        }
+    }
+
+    $reader->close();
 
     return redirect()->route('dashboard')->with('success', 'Produits importés avec succès.');
 }
+
+  
 
 
 }
