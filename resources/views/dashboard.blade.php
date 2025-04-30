@@ -47,10 +47,11 @@
 
     <!-- Analyses -->
     <a href="#"
-        class="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white hover:bg-green-600 transition-colors duration-200">
-        <i data-lucide="microscope" class="w-5 h-5"></i>
-        <span>Analyses</span>
-    </a>
+    class="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white hover:bg-green-600 transition-colors duration-200">
+    <i data-lucide="receipt" class="w-5 h-5"></i>
+    <span>Facturation</span>
+</a>
+
 
     <!-- Historiques -->
     <a href="#"
