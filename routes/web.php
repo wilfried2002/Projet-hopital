@@ -8,6 +8,7 @@ use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\PrescriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/products/import-excel', [ProductController::class, 'importExcel'])->name('products.importExcel');
     
     //Route::get('/products/import-excel', [ProductController::class, 'importExcel'])->name('products.importExcel');
+
+    // Route pour afficher le formulaire de prescription
+    Route::get('/prescriptions/create', [PrescriptionController::class, 'create'])->name('prescriptions.create');
+    Route::get('/prescriptions', [PrescriptionController::class, 'index'])->name('prescriptions');
+    
+    // Affichage du formulaire
+    Route::get('/prescriptions', [PrescriptionController::class, 'index'])->name('prescriptions');
+
+    // Traitement du formulaire (à créer ensuite)
+    Route::post('/prescriptions', [PrescriptionController::class, 'store'])->name('prescriptions.store');
 });
 
 require __DIR__.'/auth.php';
