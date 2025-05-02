@@ -25,6 +25,7 @@ class PrescriptionController extends Controller
     {
         return view('prescriptions.create');
     }
+    
 
     public function store(Request $request)
     {

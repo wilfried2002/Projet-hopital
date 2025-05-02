@@ -46,7 +46,7 @@
 </a>
 
     <!-- Analyses -->
-    <a href="#"
+    <a href="{{ route('invoices.index') }}"
     class="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white hover:bg-green-600 transition-colors duration-200">
     <i data-lucide="receipt" class="w-5 h-5"></i>
     <span>Facturation</span>
@@ -54,7 +54,7 @@
 
 
     <!-- Historiques -->
-    <a href="#"
+    <a href=""
         class="flex items-center space-x-2 px-4 py-2 rounded-r bg-yellow-500 text-white hover:bg-yellow-600 transition-colors duration-200">
         <i data-lucide="history" class="w-5 h-5"></i>
         <span>Historiques</span>

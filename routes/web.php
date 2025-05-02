@@ -9,6 +9,12 @@ use App\Imports\ProductsImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\InvoiceController;
+use App\Models\Product;
+use App\Models\Prescription;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +81,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Traitement du formulaire (à créer ensuite)
     Route::post('/prescriptions', [PrescriptionController::class, 'store'])->name('prescriptions.store');
+    Route::get('/factures', [InvoiceController::class, 'index'])->name('invoices.index');
+
 });
 
 require __DIR__.'/auth.php';

@@ -9,7 +9,7 @@ class Prescription extends Model
 
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'code', 'medicament', 'posologie', 'duree', 'instruction', 'patient', 'medecin_id'
     ];
@@ -18,4 +18,10 @@ class Prescription extends Model
     {
         return $this->belongsTo(User::class, 'medecin_id');
     }
+
+    public function patient()
+{
+    return $this->belongsTo(Patient::class);
+}
+
 }

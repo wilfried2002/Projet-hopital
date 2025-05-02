@@ -10,13 +10,15 @@ use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+
+
 class InvoiceController extends Controller
 {
     public function index()
-    {
-        $invoices = Invoice::with('patient', 'items')->latest()->paginate(10);
-        return view('invoices.index', compact('invoices'));
-    }
+{
+    $invoices = Invoice::with('patient')->latest()->paginate(10); // 10 factures par page
+    return view('products.invoices', compact('invoices'));
+}
 
     public function create()
     {
@@ -67,4 +69,5 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoices.index')->with('success', 'Facture créée avec succès.');
     }
+    
 }
